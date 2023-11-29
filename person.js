@@ -15,7 +15,22 @@ const personSchema = new Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   age: { type: Number, required: true },
-  address: addressSchema
+  address: addressSchema,
+  updated_at: Date,
+  created_at: Date
+});
+
+// pre save
+personSchema.pre("save", function (next) {
+  const currentDate = new Date();
+
+  this.updated_at = currentDate;
+
+  if (!this.created_at) {
+    this.created_at = currentDate;
+  }
+
+  next();
 });
 
 const Person = mongoose.model("Person", personSchema);
@@ -53,8 +68,36 @@ const joe = new Person({
   }
 });
 
+const guy = new Person({
+  firstName: "Guy",
+  lastName: "Jones",
+  age: 34,
+  address: {
+    city: "Miami",
+    street: "Main St.",
+    apartment: 321
+  }
+});
+
+const ronald = new Person({
+  firstName: "Ronald",
+  lastName: "Brogan",
+  age: 56,
+  address: {
+    city: "Washington DC",
+    street: "Main St.",
+    apartment: 413
+  }
+});
+
 async function addToDB(person) {
-  await person.save();
+  try { 
+    await person.save();
+    const found = await Person.find({ firstName: person.firstName });
+    console.log(found);
+  } catch (err) {
+    console.log(err);
+  } 
 }
 
 async function query(person) {
@@ -63,6 +106,43 @@ async function query(person) {
   console.log(found);
 };
 
-// addToDB(joe);
-//addToDB(katherine);
-query();
+// Find one and update
+
+const findOneAndUpdate = async function () {
+  try {
+    await Person.findOneAndUpdate({ firstName: "Ronald"}, { lastName: "Reagan"} ); // pre save is not executed before findOneAndUpdate
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+// traditional method of finding and saving
+const findandsave = async function () {
+  try {
+    const doc = await Person.findById('65672260cbff7fda1edb5029');
+    doc.firstName = 'Jorge';
+    await doc.save();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+// Find one and remove
+
+(async function () {
+  try {
+    const deleted = await Person.findOneAndDelete({ firstName: "Bro"});
+    console.log(deleted);
+  } catch (err) {
+    console.log(err);
+  }
+})();
+
+(async function () {
+  try {
+    const found = await Person.findById('65672260cbff7fda1edb5029');
+    console.log(found);
+  } catch (err) {
+    console.log(err);
+  }
+})();
