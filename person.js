@@ -136,7 +136,7 @@ const findandsave = async function () {
   } catch (err) {
     console.log(err);
   }
-})();
+});
 
 (async function () {
   try {
@@ -145,4 +145,4 @@ const findandsave = async function () {
   } catch (err) {
     console.log(err);
   }
-})();
+});
