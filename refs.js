@@ -56,14 +56,43 @@ const review1 = new Review({
 //   }
 // })();
 
+// (async function () {
+//   try {
+//     const myCritic = await Critic.findOne({ name: "Acritic Criticus"}).populate({
+//         path: 'reviews',
+//         populate: { path: 'critic'}
+//   });
+//     console.log(myCritic.reviews[0].critic);
+//   } catch (err) {
+//     console.error(err);
+//   }
+// })();
+
+// (async function () {
+//   try {
+//     const myCritic = await Critic.findOne({ name: "Acritic Criticus"}).populate({
+//       path: 'reviews',
+//       populate: {
+//         path: 'book'
+//       }
+//     });
+//     console.log(myCritic.reviews[0].book);
+//   } catch(err) {
+//     console.error(err);
+//   }
+// })();
+
+// (async function () {
+//   const myReview = await Review.find({}).populate("critic book");
+//   console.log(myReview);
+// })();
+
+// (async function () {
+//     const myCritic = await Critic.findOne({ name: "Acritic Criticus"}).populate({ path: 'reviews', select: 'text -_id'}).exec();
+//     console.log(myCritic);
+// })();
+
 (async function () {
-  try {
-    const myCritic = await Critic.findOne({ name: "Acritic Criticus"}).populate({
-        path: 'reviews',
-        populate: { path: 'critic'}
-  });
-    console.log(myCritic.reviews[0].critic);
-  } catch (err) {
-    console.error(err);
-  }
+  const myCritic = await Critic.findOne({ name: 'Acritic Criticus'});
+  console.log(await myCritic.populate('reviews'));
 })();
